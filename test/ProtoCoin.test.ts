@@ -77,4 +77,79 @@ describe("ProtoCoin Tests", function () {
             .be
             .revertedWith("Saldo insuficiente.");
     });
+
+
+    it("Should approve", async function () {
+      const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
+
+      await protocoin.aprove(otherAccount.address, 1n);
+
+      const value = await protocoin.allowance(owner.address, otherAccount.address);
+      expect(value).eq(1n);
+    });
+
+    it("Should transfer from", async function () {
+      const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
+      const value = 1_000_000n;
+
+      await protocoin.aprove(otherAccount.address, 1_000_000);
+
+      const instance = protocoin.connect(otherAccount);
+      await instance.transferFrom(owner.address, otherAccount.address, value);
+
+      const allowance = await protocoin.allowance(owner, otherAccount.address);
+      expect(allowance).eq(0);
+
+      const balanceOtherAccount = await protocoin.balanceOf(otherAccount.address);
+      expect(balanceOtherAccount).eq(value);
+    });
+
+    it("Should NOT transfer from", async function () {
+      const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
+      const value = 1_000_000n;
+      
+      const instance = protocoin.connect(otherAccount);
+
+      await expect(instance.transferFrom(owner.address, otherAccount.address, value))
+            .to
+            .be
+            .revertedWith("Saldo permitido insuficiente.");
+    });
+
+    it("Should NOT transfer - from balance", async function () {
+      const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
+      const value = 1_000_000n;
+      
+      const instance = protocoin.connect(otherAccount);
+
+      await expect(instance.transferFrom(otherAccount.address, otherAccount.address, value))
+            .to
+            .be
+            .revertedWith("Saldo insuficiente.");
+    });
+
+    it("Should NOT transfer from", async function () {
+      const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
+      const value = 1_000_000n;
+      
+      const instance = protocoin.connect(otherAccount);
+
+      await expect(instance.transferFrom(owner.address, otherAccount.address, value))
+            .to
+            .be
+            .revertedWith("Saldo permitido insuficiente.");
+    });
+
+    it("Should NOT transfer from - no allowance limit", async function () {
+      const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
+      const value = 1_000_000n;
+
+      await protocoin.aprove(otherAccount.address, 1_000_000);
+      const instance = protocoin.connect(otherAccount);
+
+      await expect(instance.transferFrom(owner.address, otherAccount.address, value + 10n))
+            .to
+            .be
+            .revertedWith("Saldo permitido insuficiente.");
+    });
 });

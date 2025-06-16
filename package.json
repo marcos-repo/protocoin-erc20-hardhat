@@ -5,7 +5,8 @@
   "scripts": {
     "start": "npx hardhat node",
     "compile": "npx hardhat compile",
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "deploy:dev": "npx hardhat ignition deploy ignition/modules/ProtoCoin.ts --network local"
   },
   "keywords": [],
   "author": "",
