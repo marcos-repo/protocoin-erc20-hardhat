@@ -82,7 +82,7 @@ describe("ProtoCoin Tests", function () {
     it("Should approve", async function () {
       const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
 
-      await protocoin.aprove(otherAccount.address, 1n);
+      await protocoin.approve(otherAccount.address, 1n);
 
       const value = await protocoin.allowance(owner.address, otherAccount.address);
       expect(value).eq(1n);
@@ -92,7 +92,7 @@ describe("ProtoCoin Tests", function () {
       const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
       const value = 1_000_000n;
 
-      await protocoin.aprove(otherAccount.address, 1_000_000);
+      await protocoin.approve(otherAccount.address, 1_000_000);
 
       const instance = protocoin.connect(otherAccount);
       await instance.transferFrom(owner.address, otherAccount.address, value);
@@ -144,7 +144,7 @@ describe("ProtoCoin Tests", function () {
       const { protocoin, owner, otherAccount } = await loadFixture(deployFixture);
       const value = 1_000_000n;
 
-      await protocoin.aprove(otherAccount.address, 1_000_000);
+      await protocoin.approve(otherAccount.address, 1_000_000);
       const instance = protocoin.connect(otherAccount);
 
       await expect(instance.transferFrom(owner.address, otherAccount.address, value + 10n))
